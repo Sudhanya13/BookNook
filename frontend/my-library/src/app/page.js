@@ -10,7 +10,7 @@ import Banner from "@/components/home/Banner";
 // a static shell. `connection()` marks the page as request-time work so the
 // slider resolves server-side on each visit; `instant = false` allows the
 // blocking render (Cache Components).
-export const instant = false;
+// export const instant = false;
 
 export default async function HomePage() {
   await connection();

@@ -163,8 +163,17 @@ export function getCategories() {
 }
 
 /** Timezone-free date formatting (ISO input keeps server/client renders identical). */
+/** Timezone-free date formatting (ISO input keeps server/client renders identical). */
 export function formatDate(isoDate) {
-  const [year, month, day] = isoDate.split("-").map(Number);
+  // If isoDate is missing, undefined, or not a string, return a fallback text
+  if (!isoDate || typeof isoDate !== "string") {
+    return "Recently added";
+  }
+
+  const parts = isoDate.split("-");
+  if (parts.length < 3) return isoDate; // Fallback if format is unexpected
+
+  const [year, month, day] = parts.map(Number);
   const months = [
     "January",
     "February",
@@ -179,5 +188,7 @@ export function formatDate(isoDate) {
     "November",
     "December",
   ];
-  return `${months[month - 1]} ${day}, ${year}`;
+
+  const monthName = months[month - 1] || "";
+  return `${monthName} ${day}, ${year}`;
 }

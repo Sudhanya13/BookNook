@@ -9,19 +9,27 @@ import BorrowButton from "@/components/borrow-button";
 // // instead of prerendering (Cache Components blocking route).
 // export const instant = false;
 
-export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const book = getBookById(id);
-  return {
-    title: book ? `${book.title} — BookNook` : "Book Not Found — BookNook",
-  };
-}
+// export async function generateMetadata({ params }) {
+//   const { id } = await params;
+//   const book = getBookById(id);
+//   return {
+//     title: book ? `${book.title} — BookNook` : "Book Not Found — BookNook",
+//   };
+// }
 
 export default async function BookDetailsPage({ params }) {
   const { id } = await params;
-  const book = getBookById(id);
 
-  if (!book) notFound();
+  // Fetch the specific book from your Express backend
+  const res = await fetch(`http://localhost:5000/all-books/${id}`, {
+    cache: "no-store", // Ensures fresh data on every request
+  });
+
+  if (!res.ok) {
+    notFound();
+  }
+
+  const book = await res.json();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -66,7 +74,7 @@ export default async function BookDetailsPage({ params }) {
           </dl>
 
           <div className="space-y-2">
-            <BorrowButton bookId={book.id} />
+            <BorrowButton bookId={book.id || book._id} />
             <p className="text-xs text-muted-foreground">
               Demo UI — borrowing is not saved anywhere yet.
             </p>
