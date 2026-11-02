@@ -60,12 +60,18 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 justify-self-end sm:gap-4">
           <div className="hidden h-6 border-l border-border/70 sm:block" />
-          <Button variant="ghost" size="lg" render={<Link href="/login" />}>
+          <Button
+            variant="ghost"
+            size="lg"
+            nativeButton={false}
+            render={<Link href="/login" />}
+          >
             <LogIn />
             Login
           </Button>
           <Button
             variant="default"
+            nativeButton={false}
             size="lg"
             className="h-9 px-4"
             render={<Link href="/register" />}

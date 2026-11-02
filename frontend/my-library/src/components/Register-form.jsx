@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function RegisterForm({ className, ...props }) {
+export function RegisterForm({ className, onSubmit, ...props }) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -22,17 +22,24 @@ export function RegisterForm({ className, ...props }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={onSubmit}>
             <div className="grid gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required />
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                />
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -43,6 +50,7 @@ export function RegisterForm({ className, ...props }) {
                 <Label htmlFor="photoURL">Photo URL</Label>
                 <Input
                   id="photoURL"
+                  name="photoURL"
                   type="url"
                   placeholder="https://example.com/photo.jpg"
                 />
@@ -50,7 +58,7 @@ export function RegisterForm({ className, ...props }) {
 
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
 
               <Button type="submit" className="w-full">
