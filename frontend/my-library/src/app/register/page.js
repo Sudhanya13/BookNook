@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { RegisterForm } from "@/components/Register-form";
 import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
   const handleEmailSignup = async (e) => {
@@ -18,6 +19,10 @@ export default function RegisterPage() {
 
     // console.log(userData);
     const { data, error } = await authClient.signUp.email(userData);
+    if (data) {
+      // console.log(data);
+      redirect("/");
+    }
 
     if (error) {
       console.error("Signup error:", error);
@@ -26,19 +31,6 @@ export default function RegisterPage() {
 
     console.log("User:", data.user);
     console.log("Token:", data.token);
-    // const { data, error } = await authClient.signUp.email({
-    //   ...userData,
-    // });
-    // if (data) {
-    //   console.log(data);
-    // }
-    // if (error) {
-    //   console.log(error);
-    // }
-    // const formData = new FormData(e.target);
-    // const user = Object.fromEntries(formData.entries());
-
-    // console.log(user);
   };
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
