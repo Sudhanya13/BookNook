@@ -46,6 +46,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowUpRight, BookOpen } from "lucide-react";
 
 export default function BookCard({ book }) {
+  console.log(book);
   return (
     <Card className="group relative flex h-full flex-col gap-0 overflow-hidden rounded-2xl border border-border/60 bg-card pt-0 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-xl">
       {/* Book Cover Container */}

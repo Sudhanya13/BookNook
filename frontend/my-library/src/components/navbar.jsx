@@ -89,8 +89,11 @@ export default function Navbar() {
           {user ? (
             /* User is logged in: Show Avatar Popover */
             <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" className="size-9 rounded-full p-0">
+              <PopoverTrigger>
+                <button
+                  type="button"
+                  className="relative flex size-9 items-center justify-center rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
                   <Avatar className="size-9">
                     <AvatarImage
                       referrerPolicy="no-referrer"
@@ -101,7 +104,7 @@ export default function Navbar() {
                       {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                     </AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </PopoverTrigger>
               <PopoverContent className="w-56" align="end">
                 <PopoverHeader className="space-y-2 text-left">

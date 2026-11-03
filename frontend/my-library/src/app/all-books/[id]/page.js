@@ -22,7 +22,7 @@ export default async function BookDetailsPage({ params }) {
 
   // Fetch the specific book from your Express backend
   const res = await fetch(`http://localhost:5000/all-books/${id}`, {
-    cache: "no-store", // Ensures fresh data on every request
+    cache: "no-store",
   });
 
   if (!res.ok) {
