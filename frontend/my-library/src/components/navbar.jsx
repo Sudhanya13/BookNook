@@ -1,8 +1,33 @@
+"use client";
+
 import Link from "next/link";
-import { BookOpen, LogIn, UserPlus } from "lucide-react";
+import { BookOpen, LogIn, UserPlus, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function Navbar() {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  const handleSignout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          // Redirect or reload if necessary, e.g., window.location.href = "/"
+        },
+      },
+    });
+  };
+
   return (
     <nav className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
       <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6">
@@ -60,25 +85,70 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 justify-self-end sm:gap-4">
           <div className="hidden h-6 border-l border-border/70 sm:block" />
-          <Button
-            variant="ghost"
-            size="lg"
-            nativeButton={false}
-            render={<Link href="/login" />}
-          >
-            <LogIn />
-            Login
-          </Button>
-          <Button
-            variant="default"
-            nativeButton={false}
-            size="lg"
-            className="h-9 px-4"
-            render={<Link href="/register" />}
-          >
-            <UserPlus />
-            Register
-          </Button>
+
+          {user ? (
+            /* User is logged in: Show Avatar Popover */
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" className="size-9 rounded-full p-0">
+                  <Avatar className="size-9">
+                    <AvatarImage
+                      referrerPolicy="no-referrer"
+                      src={user.image || ""}
+                      alt={user.name || "User"}
+                    />
+                    <AvatarFallback>
+                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <PopoverHeader className="space-y-2 text-left">
+                  <PopoverTitle className="text-sm font-semibold">
+                    {user.name}
+                  </PopoverTitle>
+                  <PopoverDescription className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </PopoverDescription>
+                </PopoverHeader>
+                <div className="mt-4 pt-2 border-t">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full justify-start gap-2"
+                    onClick={handleSignout}
+                  >
+                    <LogOut className="size-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            /* User is logged out: Show Login and Register buttons */
+            <>
+              <Button
+                variant="ghost"
+                size="lg"
+                nativeButton={false}
+                render={<Link href="/login" />}
+              >
+                <LogIn className="size-4 mr-1" />
+                Login
+              </Button>
+              <Button
+                variant="default"
+                nativeButton={false}
+                size="lg"
+                className="h-9 px-4"
+                render={<Link href="/register" />}
+              >
+                <UserPlus className="size-4 mr-1" />
+                Register
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </nav>
