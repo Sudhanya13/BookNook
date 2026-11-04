@@ -40,7 +40,7 @@ async function run() {
         console.log("Extracted Token:", token);
 
         const JWKS = createRemoteJWKSet(
-          new URL("http://localhost:3000/api/auth/jwks"),
+          new URL(`${process.env.CLIENT_URL}/api/auth/jwks`),
         );
 
         const { payload } = await jwtVerify(token, JWKS);
