@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import { MongoClient, ObjectId } from "mongodb";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -24,16 +25,40 @@ async function run() {
     const addbooksCollection = db.collection("books");
     const borrowsCollection = db.collection("borrows");
 
-    const verifyToken = (req, res, next) => {
-      const authHeader = req.headers.authorization;
-      console.log(authHeader);
-      if (!authHeader) {
-        res.status(401).send({ message: "user unautorized" });
+    // Token Verification Middleware
+    const verifyToken = async (req, res, next) => {
+      try {
+        const authHeader = req.headers.authorization;
+        console.log("Auth Header:", authHeader);
+
+        if (!authHeader) {
+          return res.status(401).send({ message: "user unauthorized" });
+        }
+
+        const tokenParts = authHeader.split(" ");
+        const token = tokenParts[1]; // Actual JWT string
+        console.log("Extracted Token:", token);
+
+        const JWKS = createRemoteJWKSet(
+          new URL("http://localhost:3000/api/auth/jwks"),
+        );
+
+        const { payload } = await jwtVerify(token, JWKS);
+        console.log("Verified Payload:", payload);
+
+        // Attach user info to request object
+        req.user = payload;
+
+        next();
+      } catch (err) {
+        console.error("Token verification failed:", err.message);
+        return res.status(403).send({
+          message: "Invalid or expired token",
+          error: err.message,
+        });
       }
-      const token = authHeader.split("");
-      console.log(token);
-      next();
     };
+
     // Root GET route
     app.get("/", (req, res) => {
       res.send("Express server is running successfully!");
@@ -53,13 +78,8 @@ async function run() {
       }
     });
 
-    // GET a single book by ID
+    // GET a single book by ID (Protected by verifyToken)
     app.get("/all-books/:id", verifyToken, async (req, res) => {
-      // const authHeader = req.headers.authorization;
-      // console.log(authHeader);
-      // if (authHeader !== "user logged in") {
-      //   return res.status(404).json({ error: "unauthorized" });
-      // }
       try {
         const id = req.params.id;
 
@@ -138,7 +158,6 @@ async function run() {
       try {
         const email = req.query.email;
 
-        // Matches userEmail sent from your frontend form
         const books = await addbooksCollection
           .find({ "addedBy.email": email })
           .toArray();
@@ -304,6 +323,7 @@ async function run() {
         });
       }
     });
+
     // ==================================
     // GET latest books (New Arrivals)
     // ==================================
@@ -311,8 +331,8 @@ async function run() {
       try {
         const books = await addbooksCollection
           .find()
-          .sort({ createdAt: -1 }) // Sort by newest first (descending order)
-          .limit(6) // Limit to 6 books
+          .sort({ createdAt: -1 })
+          .limit(6)
           .toArray();
 
         res.send(books);

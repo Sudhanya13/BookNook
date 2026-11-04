@@ -31,7 +31,7 @@ export default async function BookDetailsPage({ params }) {
   const res = await fetch(`http://localhost:5000/all-books/${id}`, {
     cache: "no-store",
     headers: {
-      authorization: jwtToken?.token,
+      authorization: `Bearer ${jwtToken?.token}`,
     },
   });
 
