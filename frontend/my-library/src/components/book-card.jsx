@@ -52,7 +52,10 @@ export default function BookCard({ book }) {
       {/* Book Cover Container */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
         <Image
-          src={book.cover}
+          src={
+            book.cover ||
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkhSOncIx4-57gKBejlCyW-wdPeBvj1JKeydYs0u3PzQ&s"
+          }
           alt={`Cover of ${book.title}`}
           fill
           unoptimized

@@ -77,6 +77,7 @@ import {
 
 export default function MyBooksPage() {
   const { data: session, isPending } = authClient.useSession();
+
   const user = session?.user;
 
   const [books, setBooks] = useState([]);

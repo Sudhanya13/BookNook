@@ -4,6 +4,9 @@ import { CalendarDays, Layers } from "lucide-react";
 import { formatDate, getBookById } from "@/lib/books";
 import BorrowButton from "@/components/borrow-button";
 
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
 // // Dynamic route: params and usePathname() (navbar) are runtime data, and
 // // notFound() must produce a real 404 — so this route renders per request
 // // instead of prerendering (Cache Components blocking route).
@@ -19,10 +22,17 @@ import BorrowButton from "@/components/borrow-button";
 
 export default async function BookDetailsPage({ params }) {
   const { id } = await params;
+  const jwtToken = await auth.api.getToken({
+    headers: await headers(),
+  });
 
+  console.log({ jwtToken });
   // Fetch the specific book from your Express backend
   const res = await fetch(`http://localhost:5000/all-books/${id}`, {
     cache: "no-store",
+    headers: {
+      authorization: jwtToken?.token,
+    },
   });
 
   if (!res.ok) {

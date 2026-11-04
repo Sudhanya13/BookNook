@@ -24,6 +24,16 @@ async function run() {
     const addbooksCollection = db.collection("books");
     const borrowsCollection = db.collection("borrows");
 
+    const verifyToken = (req, res, next) => {
+      const authHeader = req.headers.authorization;
+      console.log(authHeader);
+      if (!authHeader) {
+        res.status(401).send({ message: "user unautorized" });
+      }
+      const token = authHeader.split("");
+      console.log(token);
+      next();
+    };
     // Root GET route
     app.get("/", (req, res) => {
       res.send("Express server is running successfully!");
@@ -44,7 +54,7 @@ async function run() {
     });
 
     // GET a single book by ID
-    app.get("/all-books/:id", async (req, res) => {
+    app.get("/all-books/:id", verifyToken, async (req, res) => {
       // const authHeader = req.headers.authorization;
       // console.log(authHeader);
       // if (authHeader !== "user logged in") {
@@ -291,6 +301,26 @@ async function run() {
         console.error("Return book error:", error);
         res.status(500).send({
           message: "Failed to return book",
+        });
+      }
+    });
+    // ==================================
+    // GET latest books (New Arrivals)
+    // ==================================
+    app.get("/new-arrivals", async (req, res) => {
+      try {
+        const books = await addbooksCollection
+          .find()
+          .sort({ createdAt: -1 }) // Sort by newest first (descending order)
+          .limit(6) // Limit to 6 books
+          .toArray();
+
+        res.send(books);
+      } catch (error) {
+        console.error("Error fetching new arrivals:", error);
+        res.status(500).send({
+          success: false,
+          message: "Failed to fetch new arrivals",
         });
       }
     });

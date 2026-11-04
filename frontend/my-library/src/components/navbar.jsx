@@ -90,21 +90,21 @@ export default function Navbar() {
             /* User is logged in: Show Avatar Popover */
             <Popover>
               <PopoverTrigger>
-                <button
+                {/* <Button
                   type="button"
                   className="relative flex size-9 items-center justify-center rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                >
-                  <Avatar className="size-9">
-                    <AvatarImage
-                      referrerPolicy="no-referrer"
-                      src={user.image || ""}
-                      alt={user.name || "User"}
-                    />
-                    <AvatarFallback>
-                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
+                > */}
+                <Avatar className="size-9">
+                  <AvatarImage
+                    referrerPolicy="no-referrer"
+                    src={user.image || ""}
+                    alt={user.name || "User"}
+                  />
+                  <AvatarFallback>
+                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  </AvatarFallback>
+                </Avatar>
+                {/* </Button> */}
               </PopoverTrigger>
               <PopoverContent className="w-56" align="end">
                 <PopoverHeader className="space-y-2 text-left">
