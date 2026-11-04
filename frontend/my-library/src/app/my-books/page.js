@@ -210,9 +210,13 @@ export default function MyBooksPage() {
               <div className="relative aspect-[5/4] bg-muted">
                 {book.cover && (
                   <Image
-                    src={book.cover}
+                    src={
+                      book.cover ||
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkhSOncIx4-57gKBejlCyW-wdPeBvj1JKeydYs0u3PzQ&s"
+                    }
                     alt={book.title}
-                    fill
+                    height={45}
+                    width={55}
                     className="object-cover"
                   />
                 )}
